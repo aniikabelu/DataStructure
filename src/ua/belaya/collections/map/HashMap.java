@@ -226,9 +226,7 @@ public class HashMap<K, V> implements Map<K, V> {
     }
 
     public void putAll(HashMap<K, V> hashMap) {
-        ArrayList<Entry> nodeList = hashMap.entryList();
-
-        for (Entry entry : nodeList) {
+        for (Entry entry : hashMap.entryList()) {
             put(entry.key, entry.value);
         }
     }
