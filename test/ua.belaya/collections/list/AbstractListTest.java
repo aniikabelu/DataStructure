@@ -2,15 +2,15 @@ package ua.belaya.collections.list;
 
 import org.junit.Before;
 import org.junit.Test;
-import java.util.*;
+import java.util.Iterator;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 public abstract class AbstractListTest {
-    private List list;
-    public abstract List createList();
+    private List<Object> list;
+    public abstract List<Object> createList();
 
     @Before
     public void setUp() {
