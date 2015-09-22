@@ -3,8 +3,8 @@ package ua.belaya.collections.list;
 import java.util.*;
 
 public class LinkedList<T> implements List<T> {
-    private Node first;
-    private Node last;
+    private Node<T> first;
+    private Node<T> last;
     private int size;
 
     public void set(int index, T object) {
@@ -39,14 +39,15 @@ public class LinkedList<T> implements List<T> {
             return;
         }
 
-        Node node = searchNode(index - 1);
-        Node newNode = new Node(node, node.next, object);
+        Node<T> node = searchNode(index - 1);
+        Node<T> newNode = new Node<>(node, node.next, object);
         node.next = newNode;
         node.next.prev = newNode;
 
         size++;
     }
 
+    @SuppressWarnings("unchecked")
     public void addAll(T... objects) {
         for (T object : objects) {
             add(object);
@@ -54,25 +55,22 @@ public class LinkedList<T> implements List<T> {
     }
 
     public void remove(T object) {
-        Node node = first;
+        Node<T> node = first;
 
         if (object == null) {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++, node = node.next) {
                 if (node.object == null) {
                     removeElement(node);
                     return;
                 }
-
-                node = node.next;
             }
         } else {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++, node = node.next) {
                 if (object.equals(node.object)) {
                     removeElement(node);
                     return;
                 }
 
-                node = node.next;
             }
         }
     }
@@ -82,23 +80,21 @@ public class LinkedList<T> implements List<T> {
     }
 
     public int indexOf(T object) {
-        Node node = first;
+        Node<T> node = first;
 
         if (object == null) {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++, node = node.next) {
                 if (node.object == null) {
                     return i;
                 }
 
-                node = node.next;
             }
         } else {
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++, node = node.next) {
                 if (object.equals(node.object)) {
                     return i;
                 }
 
-                node = node.next;
             }
         }
 
@@ -106,23 +102,19 @@ public class LinkedList<T> implements List<T> {
     }
 
     public int lastIndexOf(T object) {
-        Node node = last;
+        Node<T> node = last;
 
         if (object == null) {
-            for (int i = size - 1; i >= 0; i--) {
+            for (int i = size - 1; i >= 0; i--, node = node.prev) {
                 if (node.object == null) {
                     return i;
                 }
-
-                node = node.prev;
             }
         } else {
-            for (int i = size - 1; i >= 0; i--) {
+            for (int i = size - 1; i >= 0; i--, node = node.prev) {
                 if (object.equals(node.object)) {
                     return i;
                 }
-
-                node = node.prev;
             }
         }
 
@@ -131,8 +123,8 @@ public class LinkedList<T> implements List<T> {
 
     public void clear() {
         if (size != 0) {
-            Node node = first;
-            Node nextNode = node.next;
+            Node<T> node = first;
+            Node<T> nextNode = node.next;
 
             for (int i = 0; i < size - 1; i++) {
                 node.prev = null;
@@ -161,10 +153,15 @@ public class LinkedList<T> implements List<T> {
     @Override
     public String toString() {
         StringBuilder list = new StringBuilder();
-        Node node = first;
+        Node<T> node = first;
 
         for (int i = 0; i < size; i++) {
-            list.append(node.object).append(", ");
+            if (i != size - 1) {
+                list.append(node.object).append(", ");
+            } else {
+                list.append(node.object).append(". ");
+            }
+
             node = node.next;
         }
 
@@ -183,7 +180,7 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private void removeElement(Node node) {
+    private void removeElement(Node<T> node) {
         if (size != 1) {
             if (first.equals(node)) {
                 node.next.prev = null;
@@ -203,7 +200,7 @@ public class LinkedList<T> implements List<T> {
     }
 
     private void addToBeginning(T object) {
-        Node newNode = new Node(null, first, object);
+        Node<T> newNode = new Node<>(null, first, object);
 
         first.prev = newNode;
         first = newNode;
@@ -212,7 +209,7 @@ public class LinkedList<T> implements List<T> {
     }
 
     private void addToEnd(T object) {
-        Node newNode = new Node(last, null, object);
+        Node<T> newNode = new Node<>(last, null, object);
         last.next = newNode;
         last = newNode;
 
@@ -220,7 +217,7 @@ public class LinkedList<T> implements List<T> {
     }
 
     private void addToEmptyList(T object) {
-        Node newNode = new Node(null, null, object);
+        Node<T> newNode = new Node<>(null, null, object);
 
         first = newNode;
         last = newNode;
@@ -230,7 +227,7 @@ public class LinkedList<T> implements List<T> {
 
     private class LinkedListIterator implements Iterator<T> {
         private int cursor;
-        private Node element;
+        private Node<T> element;
 
         public T next() {
             if (cursor == size) {
@@ -274,8 +271,8 @@ public class LinkedList<T> implements List<T> {
         }
     }
 
-    private Node searchNode(int index) {
-        Node node;
+    private Node<T> searchNode(int index) {
+        Node<T> node;
 
         if (index < size / 2) {
             node = first;
@@ -292,12 +289,12 @@ public class LinkedList<T> implements List<T> {
         return node;
     }
 
-    private class Node {
-        private Node next;
-        private Node prev;
-        private T object;
+    private class Node<E> {
+        private Node<E> next;
+        private Node<E> prev;
+        private E object;
 
-        private Node(Node prev, Node next, T object) {
+        private Node(Node<E> prev, Node<E> next, E object) {
             this.prev = prev;
             this.next = next;
             this.object = object;

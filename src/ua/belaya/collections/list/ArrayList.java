@@ -6,6 +6,7 @@ public class ArrayList<T> implements List<T> {
     private T[] list;
     private int size = 0;
 
+    @SuppressWarnings("unchecked")
     public ArrayList() {
         list = (T[]) new Object[10];
     }
@@ -25,6 +26,7 @@ public class ArrayList<T> implements List<T> {
         add(size, object);
     }
 
+    @SuppressWarnings("unchecked")
     public void add(int index, T object) {
         checkIndexForAdd(index);
 
@@ -39,12 +41,14 @@ public class ArrayList<T> implements List<T> {
         size++;
     }
 
+    @SuppressWarnings("unchecked")
     public void addAll(T... objects) {
-        for (T i : objects) {
-            add(i);
+        for (T object : objects) {
+            add(object);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void trimToSize() {
         if (list.length > size) {
             T[] newList = (T[]) new Object[size];

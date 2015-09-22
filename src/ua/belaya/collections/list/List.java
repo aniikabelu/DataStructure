@@ -5,6 +5,7 @@ public interface List<T> extends Iterable<T> {
 
     void add(int index, T object);
 
+    @SuppressWarnings("unchecked")
     void addAll(T... objects);
 
     void remove(T object);
